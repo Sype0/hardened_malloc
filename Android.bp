@@ -24,7 +24,11 @@ common_cflags = [
     "-DREGION_QUARANTINE_QUEUE_LENGTH=1024",
     "-DREGION_QUARANTINE_SKIP_THRESHOLD=33554432", // 32MiB
     "-DFREE_SLABS_QUARANTINE_RANDOM_LENGTH=32",
-    "-DCONFIG_CLASS_REGION_SIZE=34359738368", // 32GiB
+    // 2GiB instead of 32GiB: the Redmi Note 12 4G (topaz) kernel has a 39-bit
+    // (512GiB) user address space. Each class region is reserved twice over
+    // (REAL_CLASS_REGION_SIZE), so the arena takes 2 * N_SIZE_CLASSES * 32GiB
+    // upstream, far more than 512GiB; at 2GiB it is about 200GiB.
+    "-DCONFIG_CLASS_REGION_SIZE=2147483648",
     "-DN_ARENA=1",
     "-DCONFIG_STATS=true",
     "-DCONFIG_SELF_INIT=false",
